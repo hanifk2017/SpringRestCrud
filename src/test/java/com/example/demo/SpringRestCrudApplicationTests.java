@@ -41,6 +41,13 @@ public class SpringRestCrudApplicationTests {
 
 	@Test
 	public void shouldRetrieveAllEntities() throws Exception {
+		
+		mockMvc.perform(post("/account")
+				.content("{\"firstName\": \"Joe\", \"secondName\":\"Doe\", \"accountNumber\":\"1234\"}"))
+				.andExpect(status().isCreated()).andReturn();
+		mockMvc.perform(post("/account")
+				.content("{\"firstName\": \"John\", \"secondName\":\"Doe\", \"accountNumber\":\"1235\"}"))
+				.andExpect(status().isCreated()).andReturn();
 
 		mockMvc.perform(get("/account")).andExpect(status().isOk()).andExpect(jsonPath("$..account[0].firstName").value("Joe"))
 				.andExpect(jsonPath("$..account[0].secondName").value("Doe")).andExpect(jsonPath("$..account[0].accountNumber").value("1234"))
