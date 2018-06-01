@@ -41,30 +41,43 @@ public class SpringRestCrudApplicationTests {
 
 	@Test
 	public void shouldRetrieveAllEntities() throws Exception {
-		
+				
 		mockMvc.perform(post("/account")
 				.content("{\"firstName\": \"Joe\", \"secondName\":\"Doe\", \"accountNumber\":\"1234\"}"))
-				.andExpect(status().isCreated()).andReturn();
+				.andExpect(status().isCreated())
+				.andReturn();
 		mockMvc.perform(post("/account")
 				.content("{\"firstName\": \"John\", \"secondName\":\"Doe\", \"accountNumber\":\"1235\"}"))
-				.andExpect(status().isCreated()).andReturn();
+				.andExpect(status().isCreated())
+				.andReturn();
 
-		mockMvc.perform(get("/account")).andExpect(status().isOk()).andExpect(jsonPath("$..account[0].firstName").value("Joe"))
-				.andExpect(jsonPath("$..account[0].secondName").value("Doe")).andExpect(jsonPath("$..account[0].accountNumber").value("1234"))
-						.andExpect(jsonPath("$..account[1].firstName").value("John"))
-						.andExpect(jsonPath("$..account[1].secondName").value("Doe")).andExpect(jsonPath("$..account[1].accountNumber").value("1235"));
+		mockMvc.perform(get("/account"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$..account[0].id").value(4)) // 3 records already loaded via data.sql
+				.andExpect(jsonPath("$..account[0].firstName").value("Joe"))
+				.andExpect(jsonPath("$..account[0].secondName").value("Doe"))
+				.andExpect(jsonPath("$..account[0].accountNumber").value("1234"))
+				.andExpect(jsonPath("$..account[1].id").value(5))
+				.andExpect(jsonPath("$..account[1].firstName").value("John"))
+				.andExpect(jsonPath("$..account[1].secondName").value("Doe"))
+				.andExpect(jsonPath("$..account[1].accountNumber").value("1235"));
 	}
 	
 	@Test
 	public void shouldRetrieveEntity() throws Exception {
 
 		MvcResult mvcResult = mockMvc
-				.perform(post("/account").content("{\"firstName\": \"Joe\", \"secondName\":\"Doe\", \"accountNumber\":\"1234\"}"))
-				.andExpect(status().isCreated()).andReturn();
+				.perform(post("/account")
+				.content("{\"firstName\": \"Joe\", \"secondName\":\"Doe\", \"accountNumber\":\"1234\"}"))
+				.andExpect(status().isCreated())
+				.andReturn();
 
 		String location = mvcResult.getResponse().getHeader("Location");
-		mockMvc.perform(get(location)).andExpect(status().isOk()).andExpect(jsonPath("$.firstName").value("Joe"))
-				.andExpect(jsonPath("$.secondName").value("Doe")).andExpect(jsonPath("$.accountNumber").value("1234"));
+		mockMvc.perform(get(location))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.firstName").value("Joe"))
+				.andExpect(jsonPath("$.secondName").value("Doe"))
+				.andExpect(jsonPath("$.accountNumber").value("1234"));
 	}
 
 	@Test
@@ -72,7 +85,8 @@ public class SpringRestCrudApplicationTests {
 
 		MvcResult mvcResult = mockMvc
 				.perform(post("/account").content("{\"firstName\": \"Joe\", \"secondName\":\"Doe\", \"accountNumber\":\"1234\"}"))
-				.andExpect(status().isCreated()).andReturn();
+				.andExpect(status().isCreated())
+				.andReturn();
 
 		String location = mvcResult.getResponse().getHeader("Location");
 		mockMvc.perform(delete(location)).andExpect(status().isNoContent());
